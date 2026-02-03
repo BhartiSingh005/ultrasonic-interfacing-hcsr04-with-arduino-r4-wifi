@@ -1,37 +1,57 @@
+# UNO R4 WiFi — Ultrasonic Sensor Project
 
-This directory is intended for project header files.
+## Summary
+Minimal PlatformIO/Arduino project for the `UNO R4 WiFi` that reads distance from an ultrasonic sensor (e.g., HC-SR04) and prints measurements to the serial console. Main application logic is in `main.cpp` and build configuration is in `platformio.ini`.
 
-A header file is a file containing C declarations and macro definitions
-to be shared between several project source files. You request the use of a
-header file in your project source file (C, C++, etc) located in `src` folder
-by including it, with the C preprocessing directive `#include'.
+## Hardware
+- Board: `UNO R4 WiFi`
+- Sensor: Ultrasonic sensor (HC-SR04 or equivalent)
 
-```src/main.c
+Typical wiring (adjust pins in `main.cpp` if different):
+- `VCC` -> `5V`
+- `GND` -> `GND`
+- `Trig` -> digital pin `D2`
+- `Echo` -> digital pin `D3`
 
-#include "header.h"
+Note: Verify the voltage levels for `Echo` relative to the board. If the sensor outputs 5V and the board pin is not 5V tolerant, use a voltage divider or level shifter on `Echo`.
 
-int main (void)
-{
- ...
-}
-```
+## Software / Requirements
+- Windows
+- PlatformIO Core (CLI) or PlatformIO IDE integration
+- CLion 2025.3.2 (optional)
+- USB access to the board (configured in `platformio.ini`)
 
-Including a header file produces the same results as copying the header file
-into each source file that needs it. Such copying would be time-consuming
-and error-prone. With a header file, the related declarations appear
-in only one place. If they need to be changed, they can be changed in one
-place, and programs that include the header file will automatically use the
-new version when next recompiled. The header file eliminates the labor of
-finding and changing all the copies as well as the risk that a failure to
-find one copy will result in inconsistencies within a program.
+Project layout:
+- `src/` — application source files (contains `main.cpp`)
+- `include/` — public headers (if any)
+- `platformio.ini` — project configuration
 
-In C, the convention is to give header files names that end with `.h'.
+## Configuration
+The project uses the `uno_r4_wifi` environment in `platformio.ini`. The serial monitor is set to `9600` baud and the upload/monitor port is configured to `COM13` (edit the port if your system uses a different COM port).
 
-Read more about using header files in official GCC documentation:
+## Commands (PlatformIO CLI)
+- Build:
+  `pio run -e uno_r4_wifi`
+- Upload:
+  `pio run -e uno_r4_wifi -t upload`
+- Serial monitor (uses `monitor_speed`):
+  `pio device monitor -e uno_r4_wifi`
+  Or explicitly:
+  `pio device monitor -p COM13 -b 9600`
 
-* Include Syntax
-* Include Operation
-* Once-Only Headers
-* Computed Includes
+## `main.cpp` behavior
+- Triggers the ultrasonic sensor `Trig` pin with a short pulse.
+- Measures the echo pulse duration on `Echo` using pulse timing functions.
+- Converts duration to distance (cm/inches) and prints to Serial at `9600` baud.
+- Adjust `Trig`/`Echo` pin definitions and calibration constants in `main.cpp` as needed.
 
-https://gcc.gnu.org/onlinedocs/cpp/Header-Files.html
+## Troubleshooting
+- No serial output: confirm correct `COM` port and `monitor_speed`.
+- Unexpected distances: check wiring (Trig/Echo), sensor orientation, and power supply.
+- Erratic readings: add averaging or remove spurious measurements in `main.cpp`.
+
+## Contributing
+Open issues or PRs. Keep commits small and document pin/config changes.
+
+## License
+Add a `LICENSE` file (MIT recommended if unsure).
